@@ -10,6 +10,8 @@ namespace MazeGeneration
 
         public void Generate(int width, int height, Transform rootTransform)
         {
+            ValidateGenerate(rootTransform);
+
             List<MazeTile> mazeTiles = CreateMazeGrid(width, height, rootTransform);
         }
 
@@ -31,6 +33,12 @@ namespace MazeGeneration
             }
 
             return mazeTiles;
+        }
+
+        private void ValidateGenerate(Transform rootTransform)
+        {
+            if (!rootTransform)
+                throw new System.NullReferenceException(nameof(rootTransform));
         }
     }
 }
