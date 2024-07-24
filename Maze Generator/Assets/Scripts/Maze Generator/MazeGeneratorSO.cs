@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 namespace MazeGeneration
@@ -55,35 +55,38 @@ namespace MazeGeneration
                 {
                     MazeTile mazeTile = mazeTiles[x, y];
 
-                    // Left neighbour
-                    if (x > 0)
+                    // Associate each neighbour from the current tile
+                    foreach (Direction direction in Enum.GetValues(typeof(Direction)))
                     {
-                        mazeTile.Neighbours[(int)Direction.Left] = mazeTiles[x - 1, y];
-                        mazeTiles[x - 1, y].Neighbours[(int)Direction.Right] = mazeTile;
-                    }
+                        // Get the offset for the current direction which is the offset from the current tile to the neighbour
+                        (int offsetX, int offsetY) = DirectionHelper.GetOffset(direction);
 
-                    // Right neighbour
-                    if (x < width - 1)
-                    {
-                        mazeTile.Neighbours[(int)Direction.Right] = mazeTiles[x + 1, y];
-                        mazeTiles[x + 1, y].Neighbours[(int)Direction.Left] = mazeTile;
-                    }
+                        int neighbourX = x + offsetX;
+                        int neighbourY = y + offsetY;
 
-                    // Bottom neighbour
-                    if (y > 0)
-                    {
-                        mazeTile.Neighbours[(int)Direction.Down] = mazeTiles[x, y - 1];
-                        mazeTiles[x, y - 1].Neighbours[(int)Direction.Up] = mazeTile;
-                    }
+                        // Get the neighbour based on the direction
+                        MazeTile neighbour = GetTileAt(mazeTiles, neighbourX, neighbourY, width, height);
 
-                    // Top neighbour
-                    if (y < height - 1)
-                    {
-                        mazeTile.Neighbours[(int)Direction.Up] = mazeTiles[x, y + 1];
-                        mazeTiles[x, y + 1].Neighbours[(int)Direction.Down] = mazeTile;
+                        if (neighbour)
+                        {
+                            Direction oppositeDirection = DirectionHelper.GetOppositeDirection(direction);
+
+                            // Assign the neighbour to the current tile
+                            mazeTile.Neighbours[(int)direction] = neighbour;
+
+                            // Assign the current tile to the neighbour
+                            neighbour.Neighbours[(int)oppositeDirection] = mazeTile;
+                        }
                     }
                 }
             }
+        }
+
+        private MazeTile GetTileAt(MazeTile[,] mazeTiles, int x, int y, int width, int height)
+        {
+            bool isTileInBounds = x >= 0 && y >= 0 && x < width && y < height;
+
+            return isTileInBounds ? mazeTiles[x, y] : null;
         }
 
         private void ValidateGenerate(Transform rootTransform)
