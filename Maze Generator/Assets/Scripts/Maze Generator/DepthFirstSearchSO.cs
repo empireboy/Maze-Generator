@@ -13,18 +13,18 @@ namespace MazeGeneration
             CoroutineRunner.Instance.StartCoroutine(SearchRoutine(startTile, VisitNode));
         }
 
-        private IEnumerator SearchRoutine(MazeTile startNode, Action<MazeTile, int> visitAction = null)
+        private IEnumerator SearchRoutine(MazeTile startNode, Action<MazeTile, MazeTileType> visitAction = null)
         {
             Stack<MazeTile> currentSearchTiles = new();
             HashSet<MazeTile> finishedSearchTiles = new();
 
             currentSearchTiles.Push(startNode);
 
-            visitAction(startNode, 2);
+            visitAction(startNode, MazeTileType.Current);
 
             while (currentSearchTiles.Count > 0)
             {
-                yield return new WaitForSeconds(0.4f);
+                yield return new WaitForSeconds(0.05f);
 
                 List<int> possibleNeighbourDirections = new();
 
@@ -66,34 +66,17 @@ namespace MazeGeneration
 
                 if (possibleNeighbourDirections.Count > 0)
                 {
-                    Direction nextDirectionTest = (Direction)possibleNeighbourDirections[UnityEngine.Random.Range(0, possibleNeighbourDirections.Count)];
-                    MazeTile nextNode = startNode.Neighbours[(int)nextDirectionTest];
+                    Direction nextDirection = (Direction)possibleNeighbourDirections[UnityEngine.Random.Range(0, possibleNeighbourDirections.Count)];
+                    MazeTile nextNode = startNode.Neighbours[(int)nextDirection];
 
-                    startNode.ShowWall(false, nextDirectionTest);
+                    startNode.ShowWall(false, nextDirection);
+                    nextNode.ShowWall(false, DirectionHelper.GetOppositeDirection(nextDirection));
 
-                    Debug.Log("Next Direction: " + nextDirectionTest);
-
-                    switch (nextDirectionTest)
-                    {
-                        case Direction.Left:
-                            nextNode.ShowWall(false, Direction.Right);
-                            break;
-                        case Direction.Right:
-                            nextNode.ShowWall(false, Direction.Left);
-                            break;
-                        case Direction.Up:
-                            nextNode.ShowWall(false, Direction.Down);
-                            break;
-                        case Direction.Down:
-                            nextNode.ShowWall(false, Direction.Up);
-                            break;
-                    }
-
-                    VisitNode(currentSearchTiles.Peek(), 0);
+                    visitAction(currentSearchTiles.Peek(), MazeTileType.Active);
 
                     currentSearchTiles.Push(nextNode);
 
-                    VisitNode(nextNode, 2);
+                    visitAction(nextNode, MazeTileType.Current);
 
                     startNode = nextNode;
                 }
@@ -106,7 +89,7 @@ namespace MazeGeneration
                     if (currentSearchTiles.Count > 0)
                         startNode = currentSearchTiles.Peek();
 
-                    VisitNode(finishedNode, 1);
+                    visitAction(finishedNode, MazeTileType.Finished);
                 }
             }
 
@@ -118,22 +101,9 @@ namespace MazeGeneration
             return neighbours[(int)direction];
         }
 
-        private void VisitNode(MazeTile node, int state)
+        private void VisitNode(MazeTile node, MazeTileType state)
         {
-            switch (state)
-            {
-                case 0:
-                    node.SetFloorColor(Color.red);
-                    break;
-
-                case 1:
-                    node.SetFloorColor(Color.blue);
-                    break;
-
-                case 2:
-                    node.SetFloorColor(Color.green);
-                    break;
-            }
+            node.State = state;
         }
     }
 }

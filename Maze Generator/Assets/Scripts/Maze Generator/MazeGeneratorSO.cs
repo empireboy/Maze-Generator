@@ -36,12 +36,19 @@ namespace MazeGeneration
                     mazeTile.transform.localPosition = tilePosition;
 
                     // Initialize the Neighbours for the Left Right Up Down position
-                    mazeTile.Neighbours = new List<MazeTile>() { null, null, null, null };
+                    mazeTile.Neighbours = new() { null, null, null, null };
 
                     mazeTiles[x, y] = mazeTile;
                 }
             }
 
+            UpdateTileNeighbours(width, height, mazeTiles);
+
+            return mazeTiles;
+        }
+
+        private void UpdateTileNeighbours(int width, int height, MazeTile[,] mazeTiles)
+        {
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
@@ -77,8 +84,6 @@ namespace MazeGeneration
                     }
                 }
             }
-
-            return mazeTiles;
         }
 
         private void ValidateGenerate(Transform rootTransform)
