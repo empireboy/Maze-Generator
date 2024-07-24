@@ -10,10 +10,10 @@ namespace MazeGeneration
     {
         public void Search(MazeTile startTile)
         {
-            CoroutineRunner.Instance.StartCoroutine(Search(startTile, VisitNode));
+            CoroutineRunner.Instance.StartCoroutine(SearchRoutine(startTile, VisitNode));
         }
 
-        private IEnumerator Search(MazeTile startNode, Action<MazeTile, int> visitAction = null)
+        private IEnumerator SearchRoutine(MazeTile startNode, Action<MazeTile, int> visitAction = null)
         {
             Stack<MazeTile> currentSearchTiles = new();
             HashSet<MazeTile> finishedSearchTiles = new();
@@ -24,7 +24,7 @@ namespace MazeGeneration
 
             while (currentSearchTiles.Count > 0)
             {
-                yield return new WaitForSeconds(0.02f);
+                yield return new WaitForSeconds(0.4f);
 
                 List<int> possibleNeighbourDirections = new();
 
