@@ -31,7 +31,9 @@ namespace MazeGeneration
                     // Make sure the maze is centered
                     Vector2 tilePosition = new(x - width / 2, y - height / 2);
 
-                    MazeTile mazeTile = Instantiate(mazeTilePrefab, tilePosition, Quaternion.identity, rootTransform);
+                    MazeTile mazeTile = Instantiate(mazeTilePrefab, rootTransform);
+
+                    mazeTile.transform.localPosition = tilePosition;
 
                     // Initialize the Neighbours for the Left Right Up Down position
                     mazeTile.Neighbours = new List<MazeTile>() { null, null, null, null };
