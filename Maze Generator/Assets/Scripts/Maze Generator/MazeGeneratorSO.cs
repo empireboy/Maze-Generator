@@ -11,13 +11,13 @@ namespace MazeGeneration
         [SerializeField]
         private DepthFirstSearchSO _depthFirstSearch;
 
-        public void Generate(int width, int height, Transform rootTransform)
+        public void Generate(int width, int height, float searchTimeBetweenTiles, Transform rootTransform)
         {
             ValidateGenerate(rootTransform);
 
             MazeTile[,] mazeTiles = CreateMazeGrid(width, height, rootTransform);
 
-            _depthFirstSearch.Search(mazeTiles[0, 0]);
+            _depthFirstSearch.Search(mazeTiles[0, 0], searchTimeBetweenTiles);
         }
 
         private MazeTile[,] CreateMazeGrid(int width, int height, Transform rootTransform)
@@ -92,7 +92,7 @@ namespace MazeGeneration
         private void ValidateGenerate(Transform rootTransform)
         {
             if (!rootTransform)
-                throw new System.NullReferenceException(nameof(rootTransform));
+                throw new NullReferenceException(nameof(rootTransform));
         }
     }
 }

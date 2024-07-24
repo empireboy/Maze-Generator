@@ -8,60 +8,44 @@ namespace MazeGeneration
     [CreateAssetMenu(fileName = "Depth-First Search", menuName = "MazeGeneration/Depth-First Search")]
     public class DepthFirstSearchSO : ScriptableObject
     {
-        public void Search(MazeTile startTile)
+        public void Search(MazeTile startTile, float timeBetweenTiles)
         {
-            CoroutineRunner.Instance.StartCoroutine(SearchRoutine(startTile, VisitNode));
+            ValidateSearch(timeBetweenTiles);
+
+            CoroutineRunner.Instance.StartCoroutine(SearchRoutine(startTile, VisitNode, timeBetweenTiles));
         }
 
-        private IEnumerator SearchRoutine(MazeTile startNode, Action<MazeTile, MazeTileType> visitAction = null)
+        private IEnumerator SearchRoutine(MazeTile startNode, Action<MazeTile, MazeTileType> visitAction = null, float timeBetweenTiles = 0)
         {
             Stack<MazeTile> currentSearchTiles = new();
             HashSet<MazeTile> finishedSearchTiles = new();
 
             currentSearchTiles.Push(startNode);
 
-            visitAction(startNode, MazeTileType.Current);
+            visitAction?.Invoke(startNode, MazeTileType.Current);
 
             while (currentSearchTiles.Count > 0)
             {
-                yield return new WaitForSeconds(0.05f);
+                if (timeBetweenTiles > 0)
+                    yield return new WaitForSeconds(timeBetweenTiles);
 
                 List<int> possibleNeighbourDirections = new();
 
-                if (
-                    IsValidNeighbour(startNode.Neighbours, Direction.Left) &&
-                    !finishedSearchTiles.Contains(startNode.Neighbours[(int)Direction.Left]) &&
-                    !currentSearchTiles.Contains(startNode.Neighbours[(int)Direction.Left])
-                )
+                // Go through all the neighbours to get all possible directions for the search 
+                foreach (Direction direction in Enum.GetValues(typeof(Direction)))
                 {
-                    possibleNeighbourDirections.Add((int)Direction.Left);
-                }
+                    MazeTile neighbour = startNode.Neighbours[(int)direction];
 
-                if (
-                    IsValidNeighbour(startNode.Neighbours, Direction.Right) &&
-                    !finishedSearchTiles.Contains(startNode.Neighbours[(int)Direction.Right]) &&
-                    !currentSearchTiles.Contains(startNode.Neighbours[(int)Direction.Right])
-                )
-                {
-                    possibleNeighbourDirections.Add((int)Direction.Right);
-                }
+                    if (!neighbour)
+                        continue;
 
-                if (
-                    IsValidNeighbour(startNode.Neighbours, Direction.Up) &&
-                    !finishedSearchTiles.Contains(startNode.Neighbours[(int)Direction.Up]) &&
-                    !currentSearchTiles.Contains(startNode.Neighbours[(int)Direction.Up])
-                )
-                {
-                    possibleNeighbourDirections.Add((int)Direction.Up);
-                }
-
-                if (
-                    IsValidNeighbour(startNode.Neighbours, Direction.Down) &&
-                    !finishedSearchTiles.Contains(startNode.Neighbours[(int)Direction.Down]) &&
-                    !currentSearchTiles.Contains(startNode.Neighbours[(int)Direction.Down])
-                )
-                {
-                    possibleNeighbourDirections.Add((int)Direction.Down);
+                    // Add the direction if the current neighbour is not finished for the search
+                    // and is not currently in the path being searched
+                    if (
+                        !finishedSearchTiles.Contains(neighbour) &&
+                        !currentSearchTiles.Contains(neighbour)
+                    )
+                        possibleNeighbourDirections.Add((int)direction);
                 }
 
                 if (possibleNeighbourDirections.Count > 0)
@@ -72,11 +56,11 @@ namespace MazeGeneration
                     startNode.ShowWall(false, nextDirection);
                     nextNode.ShowWall(false, DirectionHelper.GetOppositeDirection(nextDirection));
 
-                    visitAction(currentSearchTiles.Peek(), MazeTileType.Active);
+                    visitAction?.Invoke(currentSearchTiles.Peek(), MazeTileType.Active);
 
                     currentSearchTiles.Push(nextNode);
 
-                    visitAction(nextNode, MazeTileType.Current);
+                    visitAction?.Invoke(nextNode, MazeTileType.Current);
 
                     startNode = nextNode;
                 }
@@ -89,7 +73,7 @@ namespace MazeGeneration
                     if (currentSearchTiles.Count > 0)
                         startNode = currentSearchTiles.Peek();
 
-                    visitAction(finishedNode, MazeTileType.Finished);
+                    visitAction?.Invoke(finishedNode, MazeTileType.Finished);
                 }
             }
 
@@ -104,6 +88,12 @@ namespace MazeGeneration
         private void VisitNode(MazeTile node, MazeTileType state)
         {
             node.State = state;
+        }
+
+        private void ValidateSearch(float timeBetweenTiles)
+        {
+            if (timeBetweenTiles < 0)
+                throw new ArgumentOutOfRangeException(nameof(timeBetweenTiles), timeBetweenTiles, null);
         }
     }
 }

@@ -21,19 +21,22 @@ namespace MazeGeneration
         private int _defaultHeight = 25;
 
         [SerializeField]
+        private float _defaultSearchTimeBetweenTiles = 0.05f;
+
+        [SerializeField]
         private MazeGeneratorSO _mazeGeneratorSO;
 
         private void Start()
         {
             if (_autoGenerate)
-                Generate(_defaultWidth, _defaultHeight, transform);
+                Generate(_defaultWidth, _defaultHeight, _defaultSearchTimeBetweenTiles, transform);
         }
 
-        public void Generate(int width, int height, Transform rootTransform)
+        public void Generate(int width, int height, float searchTimeBetweenTiles, Transform rootTransform)
         {
             ValidateGenerate(width, height, rootTransform);
 
-            _mazeGeneratorSO.Generate(width, height, rootTransform);
+            _mazeGeneratorSO.Generate(width, height, searchTimeBetweenTiles, rootTransform);
         }
 
         private void ValidateGenerate(int width, int height, Transform rootTransform)
