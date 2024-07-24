@@ -9,8 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7cd185248d8419741b1aeffa1d6669e4, type: 3}
-  m_Name: Maze Generator
+  m_Script: {fileID: 11500000, guid: 7c00a30082433db45ab3f5143f0ff651, type: 3}
+  m_Name: Depth-First Search
   m_EditorClassIdentifier: 
-  mazeTilePrefab: {fileID: 3630398174871748811, guid: b561f6677e841cc44a9de52ae3aa3513, type: 3}
-  _depthFirstSearch: {fileID: 11400000, guid: f9178b36609de2b40946969cd1868ebf, type: 2}
