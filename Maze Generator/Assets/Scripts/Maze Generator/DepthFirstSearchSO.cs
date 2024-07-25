@@ -8,14 +8,14 @@ namespace MazeGeneration
     [CreateAssetMenu(fileName = "Depth-First Search", menuName = "MazeGeneration/Depth-First Search")]
     public class DepthFirstSearchSO : ScriptableObject
     {
-        public void Search(MazeTile startTile, float timeBetweenTiles)
+        public void Search(MazeTile startTile, float timeBetweenTiles, Action searchFinishedAction)
         {
             ValidateSearch(timeBetweenTiles);
 
-            CoroutineRunner.Instance.StartCoroutine(SearchRoutine(startTile, VisitNode, timeBetweenTiles));
+            CoroutineRunner.Instance.StartCoroutine(SearchRoutine(startTile, timeBetweenTiles, OnVisitNode, searchFinishedAction));
         }
 
-        private IEnumerator SearchRoutine(MazeTile startNode, Action<MazeTile, MazeTileType> visitAction = null, float timeBetweenTiles = 0)
+        private IEnumerator SearchRoutine(MazeTile startNode, float timeBetweenTiles = 0, Action<MazeTile, MazeTileType> visitAction = null, Action searchFinishedAction = null)
         {
             Stack<MazeTile> currentSearchTiles = new();
             HashSet<MazeTile> finishedSearchTiles = new();
@@ -77,6 +77,8 @@ namespace MazeGeneration
                 }
             }
 
+            searchFinishedAction?.Invoke();
+
             yield return null;
         }
 
@@ -85,7 +87,7 @@ namespace MazeGeneration
             return neighbours[(int)direction];
         }
 
-        private void VisitNode(MazeTile node, MazeTileType state)
+        private void OnVisitNode(MazeTile node, MazeTileType state)
         {
             node.State = state;
         }

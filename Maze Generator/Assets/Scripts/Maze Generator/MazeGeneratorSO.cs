@@ -17,7 +17,8 @@ namespace MazeGeneration
 
             MazeTile[,] mazeTiles = CreateMazeGrid(width, height, rootTransform);
 
-            _depthFirstSearch.Search(mazeTiles[0, 0], searchTimeBetweenTiles);
+            // Start the search algorithm and cleanup after it is finished
+            _depthFirstSearch.Search(mazeTiles[0, 0], searchTimeBetweenTiles, () => OnSearchFinished(mazeTiles));
         }
 
         private MazeTile[,] CreateMazeGrid(int width, int height, Transform rootTransform)
@@ -82,6 +83,17 @@ namespace MazeGeneration
             }
         }
 
+        private void ResetTileStates(MazeTile[,] mazeTiles)
+        {
+            for (int x = 0; x < mazeTiles.GetLength(0); x++)
+            {
+                for (int y = 0; y < mazeTiles.GetLength(1); y++)
+                {
+                    mazeTiles[x, y].State = MazeTileType.None;
+                }
+            }
+        }
+
         private MazeTile GetTileAt(MazeTile[,] mazeTiles, int x, int y, int width, int height)
         {
             bool isTileInBounds = x >= 0 && y >= 0 && x < width && y < height;
@@ -93,6 +105,11 @@ namespace MazeGeneration
         {
             if (!rootTransform)
                 throw new NullReferenceException(nameof(rootTransform));
+        }
+
+        private void OnSearchFinished(MazeTile[,] mazeTiles)
+        {
+            ResetTileStates(mazeTiles);
         }
     }
 }
