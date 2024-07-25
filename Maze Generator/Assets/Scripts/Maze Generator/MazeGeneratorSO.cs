@@ -15,6 +15,8 @@ namespace MazeGeneration
         {
             ValidateGenerate(rootTransform);
 
+            ClearRootObject(rootTransform);
+
             MazeTile[,] mazeTiles = CreateMazeGrid(width, height, rootTransform);
 
             // Start the search algorithm and cleanup after it is finished
@@ -80,6 +82,14 @@ namespace MazeGeneration
                         }
                     }
                 }
+            }
+        }
+
+        private void ClearRootObject(Transform rootTransform)
+        {
+            foreach (Transform childObject in rootTransform)
+            {
+                Destroy(childObject.gameObject);
             }
         }
 

@@ -37,6 +37,11 @@ namespace MazeGeneration
             OnStateChanged += SetColorByState;
         }
 
+        private void OnDestroy()
+        {
+            OnStateChanged -= SetColorByState;
+        }
+
         public void ShowWall(bool active, Direction direction)
         {
             _walls[(int)direction].SetActive(active);

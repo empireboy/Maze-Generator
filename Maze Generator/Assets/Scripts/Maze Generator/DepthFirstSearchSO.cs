@@ -18,7 +18,7 @@ namespace MazeGeneration
         private IEnumerator SearchRoutine(MazeTile startNode, float timeBetweenTiles = 0, Action<MazeTile, MazeTileType> visitAction = null, Action searchFinishedAction = null)
         {
             Stack<MazeTile> currentSearchTiles = new();
-            HashSet<MazeTile> finishedSearchTiles = new();
+            Stack<MazeTile> finishedSearchTiles = new();
 
             currentSearchTiles.Push(startNode);
 
@@ -62,18 +62,31 @@ namespace MazeGeneration
 
                     visitAction?.Invoke(nextNode, MazeTileType.Current);
 
+                    // Make sure to remove the current state from the last finished tile
+                    // since it is not being searched currently
+                    if (finishedSearchTiles.Count > 0)
+                    {
+                        MazeTile lastFinishedMazeTile = finishedSearchTiles.Peek();
+
+                        if (lastFinishedMazeTile.State == MazeTileType.Current)
+                            visitAction?.Invoke(lastFinishedMazeTile, MazeTileType.Finished);
+                    }
+
                     startNode = nextNode;
                 }
                 else
                 {
+                    if (finishedSearchTiles.Count > 0)
+                        visitAction?.Invoke(finishedSearchTiles.Peek(), MazeTileType.Finished);
+
                     MazeTile finishedNode = currentSearchTiles.Pop();
 
-                    finishedSearchTiles.Add(finishedNode);
+                    finishedSearchTiles.Push(finishedNode);
 
                     if (currentSearchTiles.Count > 0)
                         startNode = currentSearchTiles.Peek();
 
-                    visitAction?.Invoke(finishedNode, MazeTileType.Finished);
+                    visitAction?.Invoke(finishedNode, MazeTileType.Current);
                 }
             }
 
