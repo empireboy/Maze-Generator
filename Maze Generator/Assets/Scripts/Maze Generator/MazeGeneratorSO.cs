@@ -32,7 +32,10 @@ namespace MazeGeneration
                 for (int y = 0; y < height; y++)
                 {
                     // Make sure the maze is centered
-                    Vector2 tilePosition = new(x - width / 2, y - height / 2);
+                    float offsetX = (width - 1f) / 2f;
+                    float offsetY = (height - 1f) / 2f;
+
+                    Vector2 tilePosition = new(x - offsetX, y - offsetY);
 
                     MazeTile mazeTile = Instantiate(mazeTilePrefab, rootTransform);
 
