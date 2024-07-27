@@ -6,7 +6,7 @@ namespace MazeGeneration
     [CreateAssetMenu(fileName = "Maze Generator", menuName = "MazeGeneration/Maze Generator")]
     public class MazeGeneratorSO : ScriptableObject
     {
-        public MazeTile mazeTilePrefab;
+        public MazeTileNodeProxy mazeTilePrefab;
 
         [SerializeField]
         private DepthFirstSearchSO _depthFirstSearch;
@@ -17,15 +17,15 @@ namespace MazeGeneration
 
             ClearRootObject(rootTransform);
 
-            MazeTile[,] mazeTiles = CreateMazeGrid(width, height, rootTransform);
+            MazeTileNode[,] mazeTiles = CreateMazeGrid(width, height, rootTransform);
 
             // Start the search algorithm and cleanup after it is finished
             _depthFirstSearch.Search(mazeTiles[0, 0], searchTimeBetweenTiles, () => OnSearchFinished(mazeTiles));
         }
 
-        private MazeTile[,] CreateMazeGrid(int width, int height, Transform rootTransform)
+        private MazeTileNode[,] CreateMazeGrid(int width, int height, Transform rootTransform)
         {
-            MazeTile[,] mazeTiles = new MazeTile[width, height];
+            MazeTileNode[,] mazeTiles = new MazeTileNode[width, height];
 
             for (int x = 0; x < width; x++)
             {
@@ -37,14 +37,14 @@ namespace MazeGeneration
 
                     Vector2 tilePosition = new(x - offsetX, y - offsetY);
 
-                    MazeTile mazeTile = Instantiate(mazeTilePrefab, rootTransform);
+                    MazeTileNodeProxy mazeTileProxy = Instantiate(mazeTilePrefab, rootTransform);
 
-                    mazeTile.transform.localPosition = tilePosition;
+                    mazeTileProxy.transform.localPosition = tilePosition;
 
                     // Initialize the Neighbours for the Left Right Up Down position
-                    mazeTile.Neighbours = new() { null, null, null, null };
+                    mazeTileProxy.MazeTile.Neighbours = new() { null, null, null, null };
 
-                    mazeTiles[x, y] = mazeTile;
+                    mazeTiles[x, y] = mazeTileProxy.MazeTile;
                 }
             }
 
@@ -53,13 +53,13 @@ namespace MazeGeneration
             return mazeTiles;
         }
 
-        private void UpdateTileNeighbours(int width, int height, MazeTile[,] mazeTiles)
+        private void UpdateTileNeighbours(int width, int height, MazeTileNode[,] mazeTiles)
         {
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
-                    MazeTile mazeTile = mazeTiles[x, y];
+                    MazeTileNode mazeTile = mazeTiles[x, y];
 
                     // Associate each neighbour from the current tile
                     foreach (Direction direction in Enum.GetValues(typeof(Direction)))
@@ -71,9 +71,9 @@ namespace MazeGeneration
                         int neighbourY = y + offsetY;
 
                         // Get the neighbour based on the direction
-                        MazeTile neighbour = GetTileAt(mazeTiles, neighbourX, neighbourY, width, height);
+                        MazeTileNode neighbour = GetTileAt(mazeTiles, neighbourX, neighbourY, width, height);
 
-                        if (neighbour)
+                        if (neighbour != null)
                         {
                             Direction oppositeDirection = DirectionHelper.GetOppositeDirection(direction);
 
@@ -96,7 +96,7 @@ namespace MazeGeneration
             }
         }
 
-        private void ResetTileStates(MazeTile[,] mazeTiles)
+        private void ResetTileStates(MazeTileNode[,] mazeTiles)
         {
             for (int x = 0; x < mazeTiles.GetLength(0); x++)
             {
@@ -107,7 +107,7 @@ namespace MazeGeneration
             }
         }
 
-        private MazeTile GetTileAt(MazeTile[,] mazeTiles, int x, int y, int width, int height)
+        private MazeTileNode GetTileAt(MazeTileNode[,] mazeTiles, int x, int y, int width, int height)
         {
             bool isTileInBounds = x >= 0 && y >= 0 && x < width && y < height;
 
@@ -120,7 +120,7 @@ namespace MazeGeneration
                 throw new NullReferenceException(nameof(rootTransform));
         }
 
-        private void OnSearchFinished(MazeTile[,] mazeTiles)
+        private void OnSearchFinished(MazeTileNode[,] mazeTiles)
         {
             ResetTileStates(mazeTiles);
         }

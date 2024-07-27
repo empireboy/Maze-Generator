@@ -8,17 +8,22 @@ namespace MazeGeneration
     [CreateAssetMenu(fileName = "Depth-First Search", menuName = "MazeGeneration/Depth-First Search")]
     public class DepthFirstSearchSO : ScriptableObject
     {
-        public void Search(MazeTile startTile, float timeBetweenTiles, Action searchFinishedAction)
+        public void Search(MazeTileNode startTile, float timeBetweenTiles, Action searchFinishedAction)
         {
             ValidateSearch(timeBetweenTiles);
 
             CoroutineRunner.Instance.StartCoroutine(SearchRoutine(startTile, timeBetweenTiles, OnVisitNode, searchFinishedAction));
         }
 
-        private IEnumerator SearchRoutine(MazeTile startNode, float timeBetweenTiles = 0, Action<MazeTile, MazeTileType> visitAction = null, Action searchFinishedAction = null)
+        private IEnumerator SearchRoutine(
+            MazeTileNode startNode,
+            float timeBetweenTiles = 0,
+            Action<MazeTileNode, MazeTileType> visitAction = null,
+            Action searchFinishedAction = null
+        )
         {
-            Stack<MazeTile> currentSearchTiles = new();
-            Stack<MazeTile> finishedSearchTiles = new();
+            Stack<MazeTileNode> currentSearchTiles = new();
+            Stack<MazeTileNode> finishedSearchTiles = new();
 
             currentSearchTiles.Push(startNode);
 
@@ -26,6 +31,7 @@ namespace MazeGeneration
 
             while (currentSearchTiles.Count > 0)
             {
+                // Delay the search algorithm to visualize it
                 if (timeBetweenTiles > 0)
                     yield return new WaitForSeconds(timeBetweenTiles);
 
@@ -34,9 +40,9 @@ namespace MazeGeneration
                 // Go through all the neighbours to get all possible directions for the search 
                 foreach (Direction direction in Enum.GetValues(typeof(Direction)))
                 {
-                    MazeTile neighbour = startNode.Neighbours[(int)direction];
+                    MazeTileNode neighbour = startNode.Neighbours[(int)direction];
 
-                    if (!neighbour)
+                    if (neighbour == null)
                         continue;
 
                     // Add the direction if the current neighbour is not finished for the search
@@ -51,10 +57,10 @@ namespace MazeGeneration
                 if (possibleNeighbourDirections.Count > 0)
                 {
                     Direction nextDirection = (Direction)possibleNeighbourDirections[UnityEngine.Random.Range(0, possibleNeighbourDirections.Count)];
-                    MazeTile nextNode = startNode.Neighbours[(int)nextDirection];
+                    MazeTileNode nextNode = startNode.Neighbours[(int)nextDirection];
 
-                    startNode.ShowWall(false, nextDirection);
-                    nextNode.ShowWall(false, DirectionHelper.GetOppositeDirection(nextDirection));
+                    startNode.Walls.ShowWall(false, nextDirection);
+                    nextNode.Walls.ShowWall(false, DirectionHelper.GetOppositeDirection(nextDirection));
 
                     visitAction?.Invoke(currentSearchTiles.Peek(), MazeTileType.Active);
 
@@ -66,7 +72,7 @@ namespace MazeGeneration
                     // since it is not being searched currently
                     if (finishedSearchTiles.Count > 0)
                     {
-                        MazeTile lastFinishedMazeTile = finishedSearchTiles.Peek();
+                        MazeTileNode lastFinishedMazeTile = finishedSearchTiles.Peek();
 
                         if (lastFinishedMazeTile.State == MazeTileType.Current)
                             visitAction?.Invoke(lastFinishedMazeTile, MazeTileType.Finished);
@@ -79,7 +85,7 @@ namespace MazeGeneration
                     if (finishedSearchTiles.Count > 0)
                         visitAction?.Invoke(finishedSearchTiles.Peek(), MazeTileType.Finished);
 
-                    MazeTile finishedNode = currentSearchTiles.Pop();
+                    MazeTileNode finishedNode = currentSearchTiles.Pop();
 
                     finishedSearchTiles.Push(finishedNode);
 
@@ -95,12 +101,7 @@ namespace MazeGeneration
             yield return null;
         }
 
-        private bool IsValidNeighbour(List<MazeTile> neighbours, Direction direction)
-        {
-            return neighbours[(int)direction];
-        }
-
-        private void OnVisitNode(MazeTile node, MazeTileType state)
+        private void OnVisitNode(MazeTileNode node, MazeTileType state)
         {
             node.State = state;
         }

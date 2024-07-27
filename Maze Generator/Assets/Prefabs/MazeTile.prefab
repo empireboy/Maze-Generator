@@ -261,7 +261,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 919006840493812063}
-  - component: {fileID: 3630398174871748811}
+  - component: {fileID: 8646818182325773875}
   m_Layer: 0
   m_Name: MazeTile
   m_TagString: Untagged
@@ -289,7 +289,7 @@ Transform:
   - {fileID: 3414306273941836120}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3630398174871748811
+--- !u!114 &8646818182325773875
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -298,7 +298,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2924375225410657749}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94bc0809ba596be4d810ba0e3b46b228, type: 3}
+  m_Script: {fileID: 11500000, guid: bbf8e4b71f0c36240be0e7ba174a046a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _walls:
@@ -306,7 +306,7 @@ MonoBehaviour:
   - {fileID: 33381725053615917}
   - {fileID: 6924943459307999686}
   - {fileID: 154685653045759783}
-  _spriteRenderer: {fileID: 3233779544922010540}
+  _floorSpriteRenderer: {fileID: 3233779544922010540}
 --- !u!1 &5548507277314460246
 GameObject:
   m_ObjectHideFlags: 0

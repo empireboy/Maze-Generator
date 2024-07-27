@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cd185248d8419741b1aeffa1d6669e4, type: 3}
   m_Name: Maze Generator
   m_EditorClassIdentifier: 
-  mazeTilePrefab: {fileID: 3630398174871748811, guid: b561f6677e841cc44a9de52ae3aa3513, type: 3}
+  mazeTilePrefab: {fileID: 8646818182325773875, guid: b561f6677e841cc44a9de52ae3aa3513, type: 3}
   _depthFirstSearch: {fileID: 11400000, guid: f9178b36609de2b40946969cd1868ebf, type: 2}
