@@ -62,7 +62,7 @@ namespace MazeGeneration
                 // Go through all the neighbours to get all possible directions for the search 
                 foreach (Direction direction in Enum.GetValues(typeof(Direction)))
                 {
-                    TilemapMazeTile neighbour = GetMazeTileNeighbour(mazeTiles, startTile.Position, direction); // startTile.Neighbours[(int)direction];
+                    TilemapMazeTile neighbour = GetMazeTileNeighbour(mazeTiles, startTile.Position, direction);
 
                     if (neighbour == null)
                         continue;
@@ -79,7 +79,7 @@ namespace MazeGeneration
                 if (possibleNeighbourDirections.Count > 0)
                 {
                     Direction nextDirection = (Direction)possibleNeighbourDirections[UnityEngine.Random.Range(0, possibleNeighbourDirections.Count)];
-                    TilemapMazeTile nextNode = GetMazeTileNeighbour(mazeTiles, startTile.Position, nextDirection); //startTile.Neighbours[(int)nextDirection];
+                    TilemapMazeTile nextNode = GetMazeTileNeighbour(mazeTiles, startTile.Position, nextDirection);
 
                     startTile.Walls.ShowWall(false, nextDirection);
                     nextNode.Walls.ShowWall(false, DirectionHelper.GetOppositeDirection(nextDirection));
