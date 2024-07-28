@@ -5,8 +5,8 @@ namespace MazeGeneration
 {
     public abstract class MazeGeneratorBaseSO<T> : ScriptableObject where T : MazeTileBase
     {
-        [SerializeField]
-        private TilemapDepthFirstSearchSO _depthFirstSearch;
+        public TilemapDepthFirstSearchSO depthFirstSearchSO;
+        public TileColorsSO tileColorsSO;
 
         public void Generate(int width, int height, float searchTimeBetweenTiles, Transform rootTransform)
         {
@@ -59,7 +59,7 @@ namespace MazeGeneration
         protected virtual void OnCreateMazeGridFinished(T[,] mazeTiles, float searchTimeBetweenTiles)
         {
             // Start the search algorithm and cleanup after it is finished
-            _depthFirstSearch.Search(mazeTiles, mazeTiles[0, 0], searchTimeBetweenTiles, () => OnSearchFinished(mazeTiles));
+            depthFirstSearchSO.Search(mazeTiles, mazeTiles[0, 0], searchTimeBetweenTiles, () => OnSearchFinished(mazeTiles));
         }
 
         protected virtual void ValidateGenerate(Transform rootTransform)
@@ -67,8 +67,8 @@ namespace MazeGeneration
             if (!rootTransform)
                 throw new NullReferenceException(nameof(rootTransform));
 
-            if (!_depthFirstSearch)
-                throw new NullReferenceException(nameof(_depthFirstSearch));
+            if (!depthFirstSearchSO)
+                throw new NullReferenceException(nameof(depthFirstSearchSO));
         }
     }
 }

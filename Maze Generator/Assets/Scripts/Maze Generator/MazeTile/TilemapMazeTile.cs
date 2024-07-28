@@ -10,18 +10,24 @@ namespace MazeGeneration
         public Vector3Int Position { get; private set; }
 
         private readonly Tilemap _mazeTileTilemap;
+        private readonly TileColorsSO _tileColorsSO;
 
         public TilemapMazeTile(
             MazeTileType state,
             Vector3Int position,
             Tilemap mazeTileTilemap,
-            TilemapMazeTileWalls tilemapMazeTileWalls
+            TilemapMazeTileWalls tilemapMazeTileWalls,
+            TileColorsSO tileColorsSO
         ) : base(state, tilemapMazeTileWalls)
         {
             Position = position;
             TilemapMazeTileWalls = tilemapMazeTileWalls;
 
             _mazeTileTilemap = mazeTileTilemap;
+            _tileColorsSO = tileColorsSO;
+
+            // Make sure this tile has a default color
+            SetColor(GetColorByState(state));
 
             OnStateChanged += OnStateChangedInternal;
         }
@@ -46,10 +52,10 @@ namespace MazeGeneration
         {
             return state switch
             {
-                MazeTileType.None => Color.white,
-                MazeTileType.Active => Color.red,
-                MazeTileType.Current => Color.green,
-                MazeTileType.Finished => Color.blue,
+                MazeTileType.None => _tileColorsSO.defaultColor,
+                MazeTileType.Active => _tileColorsSO.activeColor,
+                MazeTileType.Current => _tileColorsSO.currentColor,
+                MazeTileType.Finished => _tileColorsSO.finishedColor,
                 _ => throw new ArgumentOutOfRangeException(nameof(state), state, null)
             };
         }

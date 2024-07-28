@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81467b97314229648812aecd0980514e, type: 3}
   m_Name: Tilemap Maze Generator
   m_EditorClassIdentifier: 
-  _depthFirstSearch: {fileID: 11400000, guid: 19bb371cb3af0cf45b6b1beed0c5dbf3, type: 2}
+  depthFirstSearchSO: {fileID: 11400000, guid: 19bb371cb3af0cf45b6b1beed0c5dbf3, type: 2}
+  tileColorsSO: {fileID: 11400000, guid: dd41e53c8e72aff43850dba1ff1a3d7c, type: 2}
   floorTilemapPrefab: {fileID: 7737963895711402771, guid: 817c7180c787b9f4cb0e32e4f36c1f08, type: 3}
   leftWallsTilemapPrefab: {fileID: 8990933246685834271, guid: ffa08f0d2bf93e44e95afe3a39e0edda, type: 3}
   rightWallsTilemapPrefab: {fileID: 6018992915073228145, guid: c0469689114d7ff42bc1d6baf8d9bdb5, type: 3}

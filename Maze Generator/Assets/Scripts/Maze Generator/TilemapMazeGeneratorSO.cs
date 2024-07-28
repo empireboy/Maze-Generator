@@ -89,7 +89,7 @@ namespace MazeGeneration
                     );
 
                     // Create the tiles and add their respective walls
-                    TilemapMazeTile mazeTile = new(MazeTileType.None, floorTilePosition, floorTilemap, mazeTileWalls);
+                    TilemapMazeTile mazeTile = new(MazeTileType.None, floorTilePosition, floorTilemap, mazeTileWalls, tileColorsSO);
 
                     // Make the walls visible
                     mazeTile.Walls.ShowWall(true, Direction.Left);
