@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace MazeGeneration
 {
-    public abstract class MazeTileBase
+    public abstract class MazeTileBase : IColorable
     {
         protected MazeTileType state;
         public MazeTileType State

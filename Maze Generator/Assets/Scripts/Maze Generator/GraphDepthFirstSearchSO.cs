@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace MazeGeneration
 {
-    [CreateAssetMenu(fileName = "Depth-First Search", menuName = "MazeGeneration/Depth-First Search")]
-    public class DepthFirstSearchSO : ScriptableObject
+    [CreateAssetMenu(fileName = "Graph Depth-First Search", menuName = "MazeGeneration/Graph Depth-First Search")]
+    public class GraphDepthFirstSearchSO : ScriptableObject
     {
         public void Search(MazeTileNode startTile, float timeBetweenTiles, Action searchFinishedAction)
         {

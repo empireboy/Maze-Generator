@@ -4,26 +4,16 @@ using UnityEngine;
 namespace MazeGeneration
 {
     [CreateAssetMenu(fileName = "Maze Generator", menuName = "MazeGeneration/Maze Generator")]
-    public class MazeGeneratorSO : ScriptableObject
+    public class MazeGeneratorSO : MazeGeneratorBaseSO<MazeTileNode>
     {
         public MazeTileNodeProxy mazeTilePrefab;
 
-        [SerializeField]
-        private DepthFirstSearchSO _depthFirstSearch;
-
-        public void Generate(int width, int height, float searchTimeBetweenTiles, Transform rootTransform)
-        {
-            ValidateGenerate(rootTransform);
-
-            ClearRootObject(rootTransform);
-
-            MazeTileNode[,] mazeTiles = CreateMazeGrid(width, height, rootTransform);
-
-            // Start the search algorithm and cleanup after it is finished
-            _depthFirstSearch.Search(mazeTiles[0, 0], searchTimeBetweenTiles, () => OnSearchFinished(mazeTiles));
-        }
-
-        private MazeTileNode[,] CreateMazeGrid(int width, int height, Transform rootTransform)
+        protected override void CreateMazeGrid(
+            int width,
+            int height,
+            Transform rootTransform,
+            Action<MazeTileNode[,]> finishedAction
+        )
         {
             MazeTileNode[,] mazeTiles = new MazeTileNode[width, height];
 
@@ -50,7 +40,7 @@ namespace MazeGeneration
 
             UpdateTileNeighbours(width, height, mazeTiles);
 
-            return mazeTiles;
+            finishedAction?.Invoke(mazeTiles);
         }
 
         private void UpdateTileNeighbours(int width, int height, MazeTileNode[,] mazeTiles)
@@ -86,43 +76,6 @@ namespace MazeGeneration
                     }
                 }
             }
-        }
-
-        private void ClearRootObject(Transform rootTransform)
-        {
-            foreach (Transform childObject in rootTransform)
-            {
-                Destroy(childObject.gameObject);
-            }
-        }
-
-        private void ResetTileStates(MazeTileNode[,] mazeTiles)
-        {
-            for (int x = 0; x < mazeTiles.GetLength(0); x++)
-            {
-                for (int y = 0; y < mazeTiles.GetLength(1); y++)
-                {
-                    mazeTiles[x, y].State = MazeTileType.None;
-                }
-            }
-        }
-
-        private MazeTileNode GetTileAt(MazeTileNode[,] mazeTiles, int x, int y, int width, int height)
-        {
-            bool isTileInBounds = x >= 0 && y >= 0 && x < width && y < height;
-
-            return isTileInBounds ? mazeTiles[x, y] : null;
-        }
-
-        private void ValidateGenerate(Transform rootTransform)
-        {
-            if (!rootTransform)
-                throw new NullReferenceException(nameof(rootTransform));
-        }
-
-        private void OnSearchFinished(MazeTileNode[,] mazeTiles)
-        {
-            ResetTileStates(mazeTiles);
         }
     }
 }

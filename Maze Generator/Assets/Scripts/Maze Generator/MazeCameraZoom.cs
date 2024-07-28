@@ -20,7 +20,13 @@ namespace MazeGeneration
 
         private void OnGenerateMaze(float width, float height)
         {
-            _mazeCamera.orthographicSize = width / 2 + _extraBorderWidth;
+            // Calculate required orthographic sizes
+            float requiredHeight = height / 2 + _extraBorderWidth;
+            float viewportAspect = _mazeCamera.rect.width / _mazeCamera.rect.height;
+            float requiredWidth = (width / 2 + _extraBorderWidth) / viewportAspect;
+
+            // Adjust the camera zoom to ensure the entire maze fits within the view
+            _mazeCamera.orthographicSize = Mathf.Max(requiredHeight, requiredWidth);
         }
     }
 }

@@ -3,16 +3,17 @@ using UnityEngine.Tilemaps;
 
 namespace MazeGeneration
 {
-    public class TilemapMazeTileWalls : MazeTileWallsBase
+    public class TilemapMazeTileWalls : MazeTileWallsBase, IColorable
     {
         public Vector3Int Position { get; private set; }
         public Sprite WallSprite { get; private set; }
-        public Color WallColor { get; private set; }
 
         private readonly Tilemap _leftWallsTilemap;
         private readonly Tilemap _rightWallsTilemap;
         private readonly Tilemap _topWallsTilemap;
         private readonly Tilemap _bottomWallsTilemap;
+
+        private Color _wallColor;
 
         public TilemapMazeTileWalls(
             Vector3Int wallPosition,
@@ -26,12 +27,16 @@ namespace MazeGeneration
         {
             Position = wallPosition;
             WallSprite = wallSprite;
-            WallColor = wallColor;
+
+            _wallColor = wallColor;
 
             _leftWallsTilemap = leftWallsTilemap;
             _rightWallsTilemap = rightWallsTilemap;
             _topWallsTilemap = topWallsTilemap;
             _bottomWallsTilemap = bottomWallsTilemap;
+
+            // Set the initial walls color
+            SetColor(_wallColor);
         }
 
         public override void ShowWall(bool active, Direction direction)
@@ -68,19 +73,26 @@ namespace MazeGeneration
             }
         }
 
-        public void SetWallsColor(Color color)
+        public void SetColor(Color color)
         {
+            _wallColor = color;
+
             _leftWallsTilemap.SetColor(Position, color);
             _rightWallsTilemap.SetColor(Position, color);
             _topWallsTilemap.SetColor(Position, color);
             _bottomWallsTilemap.SetColor(Position, color);
         }
 
+        public Color GetColor()
+        {
+            return _wallColor;
+        }
+
         private Tile CreateWallTile()
         {
             Tile wallTile = ScriptableObject.CreateInstance<Tile>();
             wallTile.sprite = WallSprite;
-            wallTile.color = WallColor;
+            wallTile.color = _wallColor;
 
             return wallTile;
         }

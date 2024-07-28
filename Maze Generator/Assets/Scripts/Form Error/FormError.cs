@@ -11,18 +11,24 @@ public class FormError : MonoBehaviour
 
     private void Awake()
     {
-        _formErrorHandler = GetComponent<IFormErrorHandler>();
-
-        _formErrorHandler.OnFormError += OnFormError;
-        _formErrorHandler.OnFormSuccess += OnFormSuccess;
+        // Add the formErrorHandler if it found it
+        if (TryGetComponent(out _formErrorHandler))
+        {
+            _formErrorHandler.OnFormError += OnFormError;
+            _formErrorHandler.OnFormSuccess += OnFormSuccess;
+        }
 
         errorText.text = string.Empty;
     }
 
     private void OnDestroy()
     {
-        _formErrorHandler.OnFormError -= OnFormError;
-        _formErrorHandler.OnFormSuccess -= OnFormSuccess;
+        // Make sure that this object is not destroyed already
+        if (_formErrorHandler != null)
+        {
+            _formErrorHandler.OnFormError -= OnFormError;
+            _formErrorHandler.OnFormSuccess -= OnFormSuccess;
+        }
     }
 
     private void OnFormError(string errorMessage)

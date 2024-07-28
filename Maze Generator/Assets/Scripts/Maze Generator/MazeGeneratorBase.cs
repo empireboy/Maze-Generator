@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace MazeGeneration
 {
-    public class MazeGenerator : MonoBehaviour
+    public abstract class MazeGeneratorBase : MonoBehaviour
     {
         public const int MinWidth = 10;
         public const int MaxWidth = 250;
@@ -15,32 +15,32 @@ namespace MazeGeneration
         public Transform MazeRootTransform => _mazeRootTransform;
 
         // Generate maze event with Width and Height
-        public Action<float, float> OnGenerateMaze;
+        public Action<float, float> OnGenerateMaze { get; set; }
 
         [SerializeField]
-        private bool _autoGenerate;
+        protected bool autoGenerate;
 
         [Range(MinWidth, MaxWidth)]
         [SerializeField]
-        private int _defaultWidth = 25;
+        protected int defaultWidth = 25;
 
         [Range(MinHeight, MaxHeight)]
         [SerializeField]
-        private int _defaultHeight = 25;
+        protected int defaultHeight = 25;
 
         [SerializeField]
         private float _defaultSearchTimeBetweenTiles = 0.05f;
 
         [SerializeField]
-        private MazeGeneratorBaseSO<TilemapMazeTile> _mazeGeneratorSO;
+        private MazeGeneratorSO _mazeGeneratorSO;
 
         [SerializeField]
         private Transform _mazeRootTransform;
 
         private void Start()
         {
-            if (_autoGenerate)
-                Generate(_defaultWidth, _defaultHeight, _defaultSearchTimeBetweenTiles, _mazeRootTransform);
+            if (autoGenerate)
+                Generate(defaultWidth, defaultHeight, _defaultSearchTimeBetweenTiles, _mazeRootTransform);
         }
 
         public void Generate(int width, int height, float searchTimeBetweenTiles, Transform rootTransform)
