@@ -2301,6 +2301,7 @@ GameObject:
   - component: {fileID: 1400460198}
   - component: {fileID: 1400460199}
   - component: {fileID: 1400460200}
+  - component: {fileID: 1400460201}
   m_Layer: 0
   m_Name: MazeGenerator
   m_TagString: Untagged
@@ -2336,9 +2337,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _autoGenerate: 0
-  _defaultWidth: 20
-  _defaultHeight: 20
-  _defaultSearchTimeBetweenTiles: 0.02
+  _defaultWidth: 15
+  _defaultHeight: 15
+  _defaultSearchTimeBetweenTiles: 0.5
   _mazeGeneratorSO: {fileID: 11400000, guid: a2ea067917868794a82afd05308bc31b, type: 2}
   _mazeRootTransform: {fileID: 1400460197}
 --- !u!114 &1400460199
@@ -2368,6 +2369,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f698b1fd6d425e845ab91767cdb18950, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1400460201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1400460196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5967867c1b8a697418059f5ce5d6f085, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: 27
 --- !u!1 &1473259391
 GameObject:
   m_ObjectHideFlags: 0
