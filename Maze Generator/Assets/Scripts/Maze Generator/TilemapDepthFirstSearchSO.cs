@@ -14,7 +14,8 @@ namespace MazeGeneration
             MazeTileBase[,] mazeTiles,
             MazeTileBase startTile,
             float timeBetweenTiles,
-            Action searchFinishedAction)
+            Action searchFinishedAction
+        )
         {
             ValidateSearch(timeBetweenTiles);
 
